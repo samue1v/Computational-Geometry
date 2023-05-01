@@ -17,7 +17,7 @@ struct vec2Angle{
         }
 
         friend std::ostream& operator<<(std::ostream &out, const vec2Angle & vec) {
-            return out << vec.v[0] << ' ' << vec.v[1]  << ' ' <<  vec.angle <<std::endl;
+            return out << vec.v[0] << ' ' << vec.v[1] <<std::endl;
         }
 };
 
@@ -46,6 +46,28 @@ double getSquareAngle(double x,double y){
     return 8 - (-y)/x;
 }
 
+double getCircleAngle(double x, double y){
+    double inc = 0;
+    double xdir = 1;
+
+   if(y>0){
+        if(x<0){
+            xdir = -1;
+            inc = std::sqrt(2.0);
+        }
+    }
+    else if(x<0){
+        xdir = -1;
+        inc = 2.0*std::sqrt(2.0);
+    }
+    else{
+        inc = 3.0*std::sqrt(2.0);
+    }
+    double area = ((xdir-x)*y/2.0);
+    return area + inc;
+
+}
+
 void unitSquareSort(std::vector<vec2Angle> & vec){
     double x,y,angle;
     for(int i = 0; i<vec.size();i++){
@@ -58,10 +80,18 @@ void unitSquareSort(std::vector<vec2Angle> & vec){
 }
 
 void unitCircleSort(std::vector<vec2Angle> & vec){
- 
+    double x,y,angle;
+    for(int i = 0; i<vec.size();i++){
+        x = vec[i].v.x();
+        y = vec[i].v.y();
+        angle = getCircleAngle(x,y);
+        vec[i].angle = angle;
+    }
+    std::sort(vec.begin(),vec.end());
 }
 
 int main(){
+    std::ofstream file;
     std::vector<Vec2> vec;
     std::vector<vec2Angle> vecAngleSquare;
     std::vector<vec2Angle> vecAngleCircle;
@@ -74,9 +104,22 @@ int main(){
     unitSquareSort(vecAngleSquare);
     unitCircleSort(vecAngleCircle);
 
-    writeOBJ("points.obj",vec);
+    //writeOBJ("points.obj",vec);
 
-    for(auto i : vecAngleSquare){
-        std::cout<<i;
+    file.open("squaresort.txt");
+    for(int i = 0;i<vecAngleSquare.size();i++){
+        //std::cout<<"Square Sort:\n";
+        //std::cout << i <<": " << vecAngleSquare[i];
+        file << i <<": " << vecAngleSquare[i];
     }
+    file.close();
+
+    file.open("circlesort.txt");
+    for(int i = 0;i<vecAngleCircle.size();i++){
+        //std::cout<<"Circle Sort:\n";
+        //std::cout << i <<": " << vecAngleCircle[i];
+        file << i <<": " << vecAngleCircle[i];
+    }
+    file.close();
+    
 }

@@ -97,6 +97,10 @@ inline Vec2 unit(const Vec2& v) {
     return v / v.len();
 }
 
+inline bool segmentIntersect(const Vec2 & A, const Vec2 & B,const Vec2 & C, const Vec2 & D){
+    return cross(A-B,A-C) * cross(A-B,A-D) < 0 ? cross(C-D,C-A) * cross(C-D,C-B) < 0 : false;
+}
+
 inline Vec2 normalize(const Vec2& v) {
   double bigger = -INFINITY;
   if (v.x() > bigger) {
