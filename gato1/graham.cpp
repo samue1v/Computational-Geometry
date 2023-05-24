@@ -57,18 +57,18 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     std::uniform_real_distribution<double> dist{0.0, 1.0};
     int size = vectorPoints.size();
     int randPos = pointCloud.size() * dist(mt);
-    std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
+    //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
     quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[4/*randPos*/]),0,vectorPoints.size()-1);
     
-    std::cout<< "Ponto de inicio: "<<vectorPoints[0] << std::endl;
+    /*std::cout<< "Ponto de inicio: "<<vectorPoints[0] << std::endl;
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
     for(auto v : vectorPoints){
         std::cout << v;
     }
     std::cout<<std::endl;
-
+    */
     
     std::vector<int> v(size,-2);
     int previous = 0;
@@ -107,24 +107,35 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
         v[current] = -1;
     }
 
-    for(int i = 0;i<size;i++){
+    /*for(int i = 0;i<size;i++){
         if(v[i] > -1){
             convexHull.push_back(vectorPoints[i]);
         }
-    }
+    }*/
 }
 
 int main(){
-    std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
-    std::vector<Vec2> ch;
-    
-    graham(cloud,ch);
-    
+    //std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
+    std::vector<Vec2> currentHull;
+    ObjUtils catObj = ObjUtils();
+    if (catObj.readFromFile2D("./gato2d_proj.obj/") == false) {std::cout<<"Failed to open file."; return 0;}
+    std::vector<Object2D> catModel = catObj.obj2D;
+    std::vector<Object2D> catOutput;
+    std::vector<Vec2> outputPoints;
+    for (auto cloud : catModel) {
+        graham(cloud.points2D,currentHull); 
+        cloud.points2D = currentHull;
+        catOutput.push_back(cloud);
+    }
+    ObjUtils catOutputObj = catObj;
+    catOutputObj.obj2D = catOutput;
+    catOutputObj.writeToFile2D("./gato_output.obj");
+    /*
     std::cout<<"hull :\n";
 
     for(auto v : ch){
         std::cout<<v;
     }
-
+    */
     return 0;
 }
