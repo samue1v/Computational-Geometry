@@ -59,7 +59,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     int randPos = pointCloud.size() * dist(mt);
     std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
+    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[4/*randPos*/]),0,vectorPoints.size()-1);
     
     std::cout<< "Ponto de inicio: "<<vectorPoints[0] << std::endl;
     std::cout<<"ordenação :\n";
@@ -84,7 +84,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
         current = next;
         next+=1;
     }
-
+    int firstValid = current;
     v[current] = 0;
     while(!(v[0] != -2)){
         if(crossCompare(previous,current,next,vectorPoints,v)){
@@ -101,8 +101,10 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
             v[tempCurrent] = -1;
         }
     }
-    if(!crossCompare(previous,current,next,vectorPoints,v)){
-        v[next] = v[current];
+    
+    if(!crossCompare(previous,current,firstValid,vectorPoints,v)){
+        v[firstValid] = previous; //0 sai, liga o primeiro e o ultimo pontos validos 
+        v[current] = -1;
     }
 
     for(int i = 0;i<size;i++){
