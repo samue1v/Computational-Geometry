@@ -50,18 +50,29 @@ bool crossCompare(int previous, int current, int next, const std::vector<Vec2> &
     return false;
 }
 
-void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
+void graham(/*const*/ std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::vector<Vec2> vectorPoints = pointCloud;
     std::uniform_real_distribution<double> dist{0.0, 1.0};
+
+
+    for(int i;i<5;i++){
+        //pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
+    }
+
+
+
+
+    std::vector<Vec2> vectorPoints = pointCloud;
+    
     int size = vectorPoints.size();
+
+
     int randPos = pointCloud.size() * dist(mt);
     std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[4/*randPos*/]),0,vectorPoints.size()-1);
-    
-    std::cout<< "Ponto de inicio: "<<vectorPoints[0] << std::endl;
+    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
+
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
     for(auto v : vectorPoints){
@@ -84,7 +95,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
         current = next;
         next+=1;
     }
-    int firstValid = current;
+
     v[current] = 0;
     while(!(v[0] != -2)){
         if(crossCompare(previous,current,next,vectorPoints,v)){
@@ -101,11 +112,24 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
             v[tempCurrent] = -1;
         }
     }
-    
-    if(!crossCompare(previous,current,firstValid,vectorPoints,v)){
-        v[firstValid] = previous; //0 sai, liga o primeiro e o ultimo pontos validos 
-        v[current] = -1;
+
+    while(true){
+        if(v[next] > -1){
+            if(crossCompare(previous,current,next,vectorPoints,v)){
+                v[current] = previous;
+                break;
+            }
+            else{
+                v[current] = -1;
+                current = next;
+            }
+        }
+        
+        next+=1;
     }
+    
+
+
 
     for(int i = 0;i<size;i++){
         if(v[i] > -1){
@@ -115,8 +139,11 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 }
 
 int main(){
-    std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
+    //std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
+    std::vector<Vec2> cloud = {Vec2(1,0),Vec2(0,1),Vec2(-1,0),Vec2(0,-1),Vec2(0.11,0.56),Vec2(0.16,0.54),Vec2(-0.79,0.55),Vec2(0.59,-0.54),Vec2(0.94,-0.89)};
     std::vector<Vec2> ch;
+
+
     
     graham(cloud,ch);
     
