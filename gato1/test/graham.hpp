@@ -1,8 +1,8 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
-#include "vec2.hpp"
-#include "objUtils.h"
+#include "../vec2.hpp"
+#include "../objUtils.h"
 #include <vector>
 
 
@@ -132,35 +132,4 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
             convexHull.push_back(vectorPoints[i]);
         }
     }
-}
-
-int main(){
-    //std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
-    std::vector<Vec2> currentHull;
-    std::string filename = "gato2d_input.obj";
-    ObjUtils obj; 
-    obj.readFromFile2D(filename);
-
-    obj.writeToFile2D("gato2d_output.obj");
-
-    /* apaga essa linha pra descomentar tudo abaixo
-    std::vector<Object2D> catModel = catObj.obj2D;
-    std::vector<Object2D> catOutput;
-    std::vector<Vec2> outputPoints;
-    for (auto cloud : catModel) {
-        graham(cloud.points2D,currentHull); 
-        cloud.points2D = currentHull;
-        catOutput.push_back(cloud);
-    }
-    ObjUtils catOutputObj = catObj;
-    catOutputObj.obj2D = catOutput;
-    catOutputObj.writeToFile2D("./gato2d_output.obj");
-    /*
-    std::cout<<"hull :\n";
-
-    for(auto v : ch){
-        std::cout<<v;
-    }
-    */
-    return 0;
 }
