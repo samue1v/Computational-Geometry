@@ -79,7 +79,7 @@ void graham(/*const*/ std::vector<Vec2> & pointCloud, std::vector<Vec2> & convex
         std::cout << v;
     }
     std::cout<<std::endl;
-    */
+    
     
     std::vector<int> v(size,-2);
     int previous = 0;
@@ -132,7 +132,7 @@ void graham(/*const*/ std::vector<Vec2> & pointCloud, std::vector<Vec2> & convex
         if(v[i] > -1){
             convexHull.push_back(vectorPoints[i]);
         }
-    }*/
+    }
 }
 
 int main(){
