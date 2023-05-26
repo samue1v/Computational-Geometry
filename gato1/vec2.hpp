@@ -57,7 +57,7 @@ class Vec2{
 };
 
 inline std::ostream& operator<<(std::ostream &out, const Vec2 &v) {
-    return out << v[0] << ' ' << v[1]  << std::endl;
+    return out << "("<<v[0] << ',' << v[1] << ")" << std::endl;
 }
 
 inline Vec2 operator+(const Vec2 & v0,const Vec2 & v1){
