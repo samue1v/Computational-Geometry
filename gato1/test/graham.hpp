@@ -14,8 +14,8 @@ int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
     
     for (int j = first; j <= last - 1; j++)
     {
-        int p1 = pseudoAngleSquare(vec[j]);
-        int p2 = pseudoAngleSquare(pivot);
+        double p1 = pseudoAngleSquare(vec[j]);
+        double p2 = pseudoAngleSquare(pivot);
         p1 < ref ? p1+=8:1;
         p2 < ref ? p2+=8:1;
         if (p1 < p2)
