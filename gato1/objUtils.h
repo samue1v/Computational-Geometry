@@ -109,9 +109,14 @@ class ObjUtils{
 
     bool writeToFile2D(std::string fileName){
         std::ofstream OUTFILE;
+        
         OUTFILE.open(fileName);
+        
         std::string line,temp;
         Object2D currentObj;
+
+        
+        
         for(auto obj : obj2D){
             OUTFILE << "o " << obj.name << std::endl;
             for(auto v : obj.points2D){
@@ -129,7 +134,9 @@ class ObjUtils{
                 OUTFILE<< "l " << l.first << " " << l.second<<std::endl;
             }
         }
+        std::cout<<"qwert\n";
         OUTFILE.close();
+        
         return true;
     }
 
