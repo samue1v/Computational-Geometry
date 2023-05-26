@@ -14,8 +14,9 @@ int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
     
     for (int j = first; j <= last - 1; j++)
     {
-        int p1 = pseudoAngleSquare(vec[j]);
-        int p2 = pseudoAngleSquare(pivot);
+        double p1 = pseudoAngleSquare(vec[j]);
+        double p2 = pseudoAngleSquare(pivot);
+
         p1 < ref ? p1+=8:1;
         p2 < ref ? p2+=8:1;
         if (p1 < p2)
@@ -50,14 +51,14 @@ bool crossCompare(int previous, int current, int next, const std::vector<Vec2> &
     return false;
 }
 
-void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
+void graham(std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist{0.0, 1.0};
-    /* adição de pontos aleatórios
-    for(int i;i<5;i++){
+    //adição de pontos aleatórios
+    for(int i;i<20;i++){
         pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
-    }*/
+    }
 
 
 
@@ -135,13 +136,14 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 }
 
 int main(){
-    //std::vector<Vec2> cloud = {Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(-0.1,0.1),Vec2(0.2,-0.1),Vec2(0,-1),Vec2(0.1,0.1)};
+    std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1)};
     std::vector<Vec2> currentHull;
-    std::string filename = "gato2d_input.obj";
-    ObjUtils obj; 
-    obj.readFromFile2D(filename);
+    graham(cloud,currentHull);
+    std::cout<<"resultado\n";
+    for(auto v: currentHull){
+        std::cout<<v<<std::endl;
+    }
 
-    obj.writeToFile2D("gato2d_output.obj");
 
     /* apaga essa linha pra descomentar tudo abaixo
     std::vector<Object2D> catModel = catObj.obj2D;
