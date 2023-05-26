@@ -1,5 +1,6 @@
 //#include "vec2.hpp"
 #include <string>
+#include <algorithm>
 //#include "objUtils.h"
 #include "graham.hpp"
 
@@ -17,7 +18,8 @@ int main(){
         tempObjList.push_back(object);
     }
     std::cout << "=========================== fim do calculo do fecho =========================== " << std::endl;
-    obj.obj2D = tempObjList;
+    std::copy(tempObjList.begin(), tempObjList.end(), obj.obj2D.begin());
+    std::cout << "passa por aqui";
     obj.writeToFile2D("testoutput.obj");
     return 0;
 }
