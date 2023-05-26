@@ -2,6 +2,7 @@
 // g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl
 //#include "vec2.hpp"
 #include <string>
+#include <algorithm>
 //#include "objUtils.h"
 #include <fstream>
 #include "../graham.hpp"
