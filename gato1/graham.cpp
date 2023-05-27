@@ -1,8 +1,9 @@
 #include <iostream>
 #include <random>
-#include <algorithm>
 #include "vec2.hpp"
 #include "objUtils.h"
+#include <deque>
+#include <utility>
 #include <vector>
 
 
@@ -43,35 +44,29 @@ void quickSort(std::vector<Vec2> & vec,int ref,int first, int last)
     }
 }
 
-bool crossCompare(int previous, int current, int next, const std::vector<Vec2> & vectorPoints,const std::vector<int> & v){
-    double s = cross(vectorPoints[current] - vectorPoints[previous], vectorPoints[next] - vectorPoints[current]);
+bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
+    double s = cross(c - p, n - c);
     if(s>=0){
         return true;
     }
     return false;
 }
 
-void graham(std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
+void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist{0.0, 1.0};
     //adição de pontos aleatórios
-    for(int i;i<20;i++){
-        pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
-    }
-
-
-
+    //for(int i;i<3;i++){
+    //    pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
+    //}
 
     std::vector<Vec2> vectorPoints = pointCloud;
-    
     int size = vectorPoints.size();
-
-
     int randPos = pointCloud.size() * dist(mt);
     //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
+    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[0/*randPos*/]),0,vectorPoints.size()-1);
 
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
@@ -79,70 +74,54 @@ void graham(std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
         std::cout << v;
     }
     std::cout<<std::endl;
-    
-    
-    std::vector<int> v(size,-2);
-    int previous = 0;
-    int current = 1;
-    int next = 2;
-    //v[1] = 0;
-    //v[0] = v.size()-1; //????????
 
-   
-   
-    while(!crossCompare(previous,current,next,vectorPoints,v)){
-        v[current] = -1;
-        current = next;
-        next+=1;
+
+    std::deque<std::pair<Vec2,int>> deck;
+    for(auto v : vectorPoints){
+        deck.push_back(std::pair<Vec2,int>(v,0));
     }
 
-    v[current] = 0;
-    while(!(v[0] != -2)){
-        if(crossCompare(previous,current,next,vectorPoints,v)){
-            v[next] = current;
-            v[current] = previous;
-            previous = current;
-            current = next;
-            next = (next + 1)%size;
-        }
-        else{
-            int tempCurrent = current;
-            previous = v[previous];
-            current = v[current];
-            v[tempCurrent] = -1;
-        }
-    }
+    std::pair<Vec2,int> temp;
 
     while(true){
-        if(v[next] > -1){
-            if(crossCompare(previous,current,next,vectorPoints,v)){
-                v[current] = previous;
-                break;
-            }
-            else{
-                v[current] = -1;
-                current = next;
-            }
+        if(crossCompare(deck.back().first,deck.front().first, deck[1].first)){
+            temp = deck.front();
+            deck.pop_front();
+            deck.push_back(temp);
         }
-        
-        next+=1;
+        exit(-1);
     }
 
-    for(int i = 0;i<size;i++){
-        if(v[i] > -1){
-            convexHull.push_back(vectorPoints[i]);
-        }
-    }
+
+
+
+
+
+
+
+
+
+
 }
 
 int main(){
-    std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1)};
+    //std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1)};
+    std::vector<Vec2> cloud = {Vec2(0.259385,-0.345199),Vec2(1,-1),Vec2(0.810757,0.276404),Vec2(1,1),Vec2(-1,1),Vec2(-1,-1),Vec2(-0.459101,-0.82045)};
+    /*std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1),  
+        Vec2(-0.992587, -0.816825), 
+        Vec2(-0.937301, 0.14279), 
+        Vec2(-0.344649, -0.0237413), 
+        Vec2(-0.301262, -0.0451829), 
+        Vec2(-0.529533, 0.442845), 
+        Vec2(-0.446829, 0.331714)};
+        */
+
     std::vector<Vec2> currentHull;
     graham(cloud,currentHull);
     std::cout<<"resultado\n";
-    for(auto v: currentHull){
-        std::cout<<v<<std::endl;
-    }
+    //for(auto v: currentHull){
+    //    std::cout<<v<<std::endl;
+    //}
 
 
     /* apaga essa linha pra descomentar tudo abaixo
