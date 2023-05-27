@@ -1,12 +1,13 @@
 #include <iostream>
 #include <random>
-#include <algorithm>
 #include "../vec2.hpp"
 #include "../objUtils.h"
+#include <deque>
+#include <utility>
 #include <vector>
 
 
-int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
+int qsPartition(std::vector<Vec2> & vec, double ref, int first, int last)
 {
     Vec2 pivot = vec[last];
     int i = (first - 1);
@@ -16,6 +17,7 @@ int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
     {
         double p1 = pseudoAngleSquare(vec[j]);
         double p2 = pseudoAngleSquare(pivot);
+
         p1 < ref ? p1+=8:1;
         p2 < ref ? p2+=8:1;
         if (p1 < p2)
@@ -32,7 +34,7 @@ int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
     return (i + 1);
 }
  
-void quickSort(std::vector<Vec2> & vec,int ref,int first, int last)
+void quickSort(std::vector<Vec2> & vec,double ref,int first, int last)
 {
     if (first < last)
     {
@@ -42,8 +44,8 @@ void quickSort(std::vector<Vec2> & vec,int ref,int first, int last)
     }
 }
 
-bool crossCompare(int previous, int current, int next, const std::vector<Vec2> & vectorPoints,const std::vector<int> & v){
-    double s = cross(vectorPoints[current] - vectorPoints[previous], vectorPoints[next] - vectorPoints[current]);
+bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
+    double s = cross(c - p, n - c);
     if(s>=0){
         return true;
     }
@@ -54,21 +56,15 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist{0.0, 1.0};
-    /* adição de pontos aleatórios
-    for(int i;i<5;i++){
-        pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
-    }*/
-
-
-
+    //adição de pontos aleatórios
+    //for(int i;i<100;i++){
+    //    pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
+    //}
 
     std::vector<Vec2> vectorPoints = pointCloud;
-    
     int size = vectorPoints.size();
-
-
     int randPos = pointCloud.size() * dist(mt);
-    //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
+    std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
     quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
 
@@ -78,58 +74,30 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
         std::cout << v;
     }
     std::cout<<std::endl;
-    
-    
-    std::vector<int> v(size,-2);
-    int previous = 0;
-    int current = 1;
-    int next = 2;
-    //v[1] = 0;
-    //v[0] = v.size()-1; //????????
 
-   
-   
-    while(!crossCompare(previous,current,next,vectorPoints,v)){
-        v[current] = -1;
-        current = next;
-        next+=1;
+
+    std::deque<std::pair<Vec2,int>> deck;
+    for(auto v : vectorPoints){
+        deck.push_back(std::pair<Vec2,int>(v,0));
     }
 
-    v[current] = 0;
-    while(!(v[0] != -2)){
-        if(crossCompare(previous,current,next,vectorPoints,v)){
-            v[next] = current;
-            v[current] = previous;
-            previous = current;
-            current = next;
-            next = (next + 1)%size;
+    std::pair<Vec2,int> temp;
+
+    while(deck.front().second < 2){
+        if(crossCompare(deck.back().first,deck.front().first, deck[1].first)){
+            temp = deck.front();
+            deck.pop_front();
+            deck.push_back(temp);
+            deck.front().second+=1;
         }
         else{
-            int tempCurrent = current;
-            previous = v[previous];
-            current = v[current];
-            v[tempCurrent] = -1;
+            deck.pop_front();
+            temp = deck.back();
+            deck.pop_back();
+            deck.push_front(temp);
         }
     }
-
-    while(true){
-        if(v[next] > -1){
-            if(crossCompare(previous,current,next,vectorPoints,v)){
-                v[current] = previous;
-                break;
-            }
-            else{
-                v[current] = -1;
-                current = next;
-            }
-        }
-        
-        next+=1;
-    }
-
-    for(int i = 0;i<size;i++){
-        if(v[i] > -1){
-            convexHull.push_back(vectorPoints[i]);
-        }
+    for(auto p : deck){
+        convexHull.push_back(p.first);
     }
 }

@@ -57,7 +57,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist{0.0, 1.0};
     //adição de pontos aleatórios
-    //for(int i;i<3;i++){
+    //for(int i;i<100;i++){
     //    pointCloud.push_back(Vec2(dist(mt)*2 -1,dist(mt)*2-1));    
     //}
 
@@ -66,7 +66,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     int randPos = pointCloud.size() * dist(mt);
     //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[1/*randPos*/]),0,vectorPoints.size()-1);
+    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
 
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
@@ -103,8 +103,10 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 }
 
 int main(){
+
+
     //std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1)};
-    std::vector<Vec2> cloud = {Vec2(0.259385,-0.345199),Vec2(1,-1),Vec2(0.810757,0.276404),Vec2(1,1),Vec2(-1,1),Vec2(-1,-1),Vec2(-0.459101,-0.82045)};
+    //std::vector<Vec2> cloud = {Vec2(0.259385,-0.345199),Vec2(1,-1),Vec2(0.810757,0.276404),Vec2(1,1),Vec2(-1,1),Vec2(-1,-1),Vec2(-0.459101,-0.82045)};
     /*std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1),  
         Vec2(-0.992587, -0.816825), 
         Vec2(-0.937301, 0.14279), 
@@ -112,34 +114,21 @@ int main(){
         Vec2(-0.301262, -0.0451829), 
         Vec2(-0.529533, 0.442845), 
         Vec2(-0.446829, 0.331714)};
-        */
-
-    std::vector<Vec2> currentHull;
-    graham(cloud,currentHull);
-    std::cout<<"resultado\n";
-    //for(auto v: currentHull){
-    //    std::cout<<v<<std::endl;
-    //}
-
-
-    /* apaga essa linha pra descomentar tudo abaixo
-    std::vector<Object2D> catModel = catObj.obj2D;
-    std::vector<Object2D> catOutput;
-    std::vector<Vec2> outputPoints;
-    for (auto cloud : catModel) {
-        graham(cloud.points2D,currentHull); 
-        cloud.points2D = currentHull;
-        catOutput.push_back(cloud);
-    }
-    ObjUtils catOutputObj = catObj;
-    catOutputObj.obj2D = catOutput;
-    catOutputObj.writeToFile2D("./gato2d_output.obj");
-    /*
-    std::cout<<"hull :\n";
-
-    for(auto v : ch){
-        std::cout<<v;
-    }
+        
     */
+    std::string filename = "gatojoin.obj";
+    std::ofstream OUT;
+    OUT.open("saida.obj");
+    OUT << "o gatodoido\n";
+    ObjUtils bh,ah;
+    bh.readFromFile2D(filename);
+    
+    int cout=0;
+    std::vector<Vec2> ch;
+    graham(bh.obj2D[0].points2D,ch);
+    for(auto v: ch){
+        OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
+    }
+    OUT.close();
     return 0;
 }
