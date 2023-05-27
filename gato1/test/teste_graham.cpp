@@ -1,4 +1,4 @@
-#include "graham.hpp"
+#include "../graham.hpp"
 
 bool checkHull(const std::vector<Vec2> hull,double d){
     for (auto v : hull){

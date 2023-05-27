@@ -1,86 +1,34 @@
-// On linux compile with:
-// g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl
-// On windows compile with (if using mingw)
-// g++ main.cpp -o prog.exe -lmingw32 -lSDL2main -lSDL2
-// On Mac compile with:
-// clang++ main.cpp -I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks -framework SDL2
+#include "graham.hpp"
+#include <fstream>
+#include <string>
 
-// C++ Standard Libraries
-#include <iostream>
-// Third Party
-#include <SDL2/SDL.h> // For Mac, use <SDL.h>
-
-int main(int argc, char* argv[]){
-    // Create a window data type
-    // This pointer will point to the 
-    // window that is allocated from SDL_CreateWindow
-    SDL_Window* window=nullptr;
-
-    // Initialize the video subsystem.
-    // iF it returns less than 1, then an
-    // error code will be received.
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        std::cout << "SDL could not be initialized: " <<
-                  SDL_GetError()<<std::endl;
-    }else{
-        std::cout << "SDL video system is ready to go\n";
-    }
-    // Request a window to be created for our platform
-    // The parameters are for the title, x and y position,
-    // and the width and height of the window.
-    window = SDL_CreateWindow("C++ SDL2 Window",0, 0, 640,480,SDL_WINDOW_SHOWN);
-
-    SDL_Renderer* renderer = nullptr;
-    renderer = SDL_CreateRenderer(window,4,SDL_RENDERER_ACCELERATED);
-    
-    // Create a rectangle
-    SDL_Rect rectangle;
-    rectangle.x = 50;
-    rectangle.y = 100;
-    rectangle.w = 20;
-    rectangle.h = 20;
+int main(){
 
 
-    // Infinite loop for our application
-    bool gameIsRunning = true;
-    // Main application loop
-    while(gameIsRunning){
-        SDL_Event event;
-
-        // (1) Handle Input
-        // Start our event loop
-        while(SDL_PollEvent(&event)){
-            // Handle each specific event
-            if(event.type == SDL_QUIT){
-                gameIsRunning= false;
-            }
-        }
-        // (2) Handle Updates
+    //std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1)};
+    //std::vector<Vec2> cloud = {Vec2(0.259385,-0.345199),Vec2(1,-1),Vec2(0.810757,0.276404),Vec2(1,1),Vec2(-1,1),Vec2(-1,-1),Vec2(-0.459101,-0.82045)};
+    /*std::vector<Vec2> cloud = {Vec2(1,1),Vec2(-1,-1),Vec2(1,-1),Vec2(-1,1),  
+        Vec2(-0.992587, -0.816825), 
+        Vec2(-0.937301, 0.14279), 
+        Vec2(-0.344649, -0.0237413), 
+        Vec2(-0.301262, -0.0451829), 
+        Vec2(-0.529533, 0.442845), 
+        Vec2(-0.446829, 0.331714)};
         
-        // (3) Clear and Draw the Screen
-        // Gives us a clear "canvas"
-        SDL_SetRenderDrawColor(renderer,0,0,0,SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(renderer);
-
-        // Do our drawing
-        SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawLine(renderer,5,5,100,120);
-
-        SDL_RenderDrawRect(renderer,&rectangle);
-
-
-        // Finally show what we've drawn
-        SDL_RenderPresent(renderer);
-
-    }
-
-    // We destroy our window. We are passing in the pointer
-    // that points to the memory allocated by the 
-    // 'SDL_CreateWindow' function. Remember, this is
-    // a 'C-style' API, we don't have destructors.
-    SDL_DestroyWindow(window);
+    */
+    std::string filename = "gatojoin.obj";
+    std::ofstream OUT;
+    OUT.open("saida.obj");
+    OUT << "o gatodoido\n";
+    ObjUtils bh,ah;
+    bh.readFromFile2D(filename);
     
-    // our program.
-    SDL_Quit();
+    int cout=0;
+    std::vector<Vec2> ch;
+    graham(bh.obj2D[0].points2D,ch);
+    for(auto v: ch){
+        OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
+    }
+    OUT.close();
     return 0;
 }

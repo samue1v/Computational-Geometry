@@ -2,7 +2,7 @@
 #include <string>
 //#include "objUtils.h"
 #include <fstream>
-#include "graham.hpp"
+#include "../graham.hpp"
 
 int main(){
     //std::string filename = "../gato2d_input.obj";
