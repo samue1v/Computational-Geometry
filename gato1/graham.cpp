@@ -83,7 +83,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 
     std::pair<Vec2,int> temp;
 
-    while(deck.front().second < 2){
+    while( (deck.front().second < 2 || deck.back().second < 2)){
         if(crossCompare(deck.back().first,deck.front().first, deck[1].first)){
             temp = deck.front();
             deck.pop_front();

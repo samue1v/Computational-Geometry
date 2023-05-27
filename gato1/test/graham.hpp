@@ -64,7 +64,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     std::vector<Vec2> vectorPoints = pointCloud;
     int size = vectorPoints.size();
     int randPos = pointCloud.size() * dist(mt);
-    std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
+    //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
     quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
 
@@ -83,7 +83,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 
     std::pair<Vec2,int> temp;
 
-    while(deck.front().second < 2){
+    while( (deck.front().second < 2 || deck.back().second < 2)){
         if(crossCompare(deck.back().first,deck.front().first, deck[1].first)){
             temp = deck.front();
             deck.pop_front();

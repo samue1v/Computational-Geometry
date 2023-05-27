@@ -60,6 +60,13 @@ inline std::ostream& operator<<(std::ostream &out, const Vec2 &v) {
     return out << "("<<v[0] << ',' << v[1] << ")" << std::endl;
 }
 
+inline bool operator==(const Vec2 & v0,const Vec2 & v1){
+    return v0[0]==v1[0] && v0[1]==v1[1]?true:false;
+} 
+inline bool operator!=(const Vec2 & v0,const Vec2 & v1){
+    return v0[0]!=v1[0] || v0[1]!=v1[1]?true:false;
+} 
+
 inline Vec2 operator+(const Vec2 & v0,const Vec2 & v1){
     return Vec2(v0[0]+v1[0], v0[1]+v1[1]);
 } 
