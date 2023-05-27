@@ -7,7 +7,7 @@
 #include <vector>
 
 
-int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
+int qsPartition(std::vector<Vec2> & vec, double ref, int first, int last)
 {
     Vec2 pivot = vec[last];
     int i = (first - 1);
@@ -34,7 +34,7 @@ int qsPartition(std::vector<Vec2> & vec, int ref, int first, int last)
     return (i + 1);
 }
  
-void quickSort(std::vector<Vec2> & vec,int ref,int first, int last)
+void quickSort(std::vector<Vec2> & vec,double ref,int first, int last)
 {
     if (first < last)
     {
@@ -66,7 +66,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     int randPos = pointCloud.size() * dist(mt);
     //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[0/*randPos*/]),0,vectorPoints.size()-1);
+    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[1/*randPos*/]),0,vectorPoints.size()-1);
 
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
@@ -83,25 +83,23 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
 
     std::pair<Vec2,int> temp;
 
-    while(true){
+    while(deck.front().second < 2){
         if(crossCompare(deck.back().first,deck.front().first, deck[1].first)){
             temp = deck.front();
             deck.pop_front();
             deck.push_back(temp);
+            deck.front().second+=1;
         }
-        exit(-1);
+        else{
+            deck.pop_front();
+            temp = deck.back();
+            deck.pop_back();
+            deck.push_front(temp);
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
+    for(auto p : deck){
+        convexHull.push_back(p.first);
+    }
 }
 
 int main(){
