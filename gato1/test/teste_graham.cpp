@@ -1,11 +1,15 @@
 #include "graham.hpp"
 
-bool checkHull(const std::vector<Vec2> hull){
+bool checkHull(const std::vector<Vec2> hull,double d){
     for (auto v : hull){
-        if (!(v == Vec2(1.0,1.0) || v == Vec2(-1.0,1.0) || v == Vec2(1.0,-1.0) || v == Vec2(-1.0,-1.0))  ){
+        if (!(v == Vec2(d,d) || v == Vec2(-d,d) || v == Vec2(d,-d) || v == Vec2(-d,-d) || v == Vec2(2,0) || v == Vec2(-2,0))  ){
             return false;
         } 
     }
+    if(hull.size()<6){
+        return false;
+    }
+    std::cout<<hull.size() << std::endl;
     return true;
 }
 
@@ -18,10 +22,19 @@ int main(){
     int j = 0;
     while(true){
         std::cout<<"================================iteração "<< j++ << "================================================\n";
+        //cloud.push_back(Vec2(10,10));
+        //cloud.push_back(Vec2(10,-10));
+        //cloud.push_back(Vec2(-10,10));
+        //cloud.push_back(Vec2(-10,-10));
+        //cloud.push_back(Vec2(20,0));
+        //cloud.push_back(Vec2(-20,0));
+        
         cloud.push_back(Vec2(1,1));
         cloud.push_back(Vec2(1,-1));
         cloud.push_back(Vec2(-1,1));
         cloud.push_back(Vec2(-1,-1));
+        cloud.push_back(Vec2(2,0));
+        cloud.push_back(Vec2(-2,0));
         //adição de pontos aleatórios
 
         for(int i=0;i<10;i++){
@@ -33,7 +46,7 @@ int main(){
                 std::cout<<"angulo: " << pseudoAngleSquare(v) << " Ponto: " << v;
         }*/
 
-        if (!checkHull(ch)){
+        if (!checkHull(ch,1)){
             std::cout<<"deu errado!\n";
             for (auto v : ch){
                 std::cout<<"angulo: " << pseudoAngleSquare(v) << " Ponto: " << v;

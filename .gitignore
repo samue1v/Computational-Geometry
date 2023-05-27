@@ -34,3 +34,5 @@
 # Exceptions to .gitignore
 !gato2d_input.obj
 !gato2d_output.obj
+!reducedcat.obj
+!saida.obj

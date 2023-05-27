@@ -6,7 +6,7 @@
 
 int main(){
     //std::string filename = "../gato2d_input.obj";
-    std::string filename = "../gatojoin.obj";
+    std::string filename = "../fixedcat.obj";
     std::ofstream OUT;
     OUT.open("saida.obj");
     OUT << "o gatodoido\n";
