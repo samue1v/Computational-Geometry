@@ -87,9 +87,9 @@ int main () {
     //caso ja existir um ponto em T, nao adicionar e adicionar na lista de indices a posiçao ja existente em T 
     std::vector<std::vector<int>> objectIndexList(objectList.size());
     std::vector<Vec2> T; 
-    for (auto object : objectList){
-        for (int i=0; i<object.points2D.size();i++){
-            int index = addInsideTotal(T, object.points2D[i]);
+    for (int i=0; i<objectList.size(); i++){
+        for (int j=0; j<objectList[i].points2D.size();j++){
+            int index = addInsideTotal(T, objectList[i].points2D[j]);
             objectIndexList[i].push_back(index); 
         }
     }
@@ -108,7 +108,26 @@ int main () {
     }
    //criar uma matriz de adjacencia para T, considerando-o como um grafo, e adiciona true nos elementos i,j e j,i a partir do que está escrito nas listas de índice
    //caso exista o valor true em i,j ou em j,i, atribua false nessas posições.  
-
+    std::vector<std::vector<bool>> adjacentMatrix(T.size(),std::vector<bool>(T.size(),false));
+    for (int i=0; i<objectIndexList.size(); i++){
+        for (int j=0; j<objectIndexList[i].size(); j++){
+                int indexInit = objectIndexList[i][j];
+                int indexFinal = objectIndexList[i][(j+1)%objectIndexList[i].size()];
+                if (adjacentMatrix[indexInit][indexFinal] == true){
+                    adjacentMatrix[indexInit][indexFinal] = false;
+                    adjacentMatrix[indexFinal][indexInit] = false;
+                } else {
+                    adjacentMatrix[indexInit][indexFinal] = true;
+                    adjacentMatrix[indexFinal][indexInit] = true;
+                }
+        }
+    }
+    for(auto line : adjacentMatrix  ){
+        for (auto index : line){
+            std::cout<<index <<"  ";
+        }
+        std::cout<<std::endl;
+    }
    //realizar a visualização com o SDL2
 
         // Infinite loop for our application
@@ -142,12 +161,15 @@ int main () {
             for (auto v : object.points2D){
                 SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
             }
-            for (int i=0; i<size;i++){
-                int index = i%(size);
-                std::cout<<"printing "<<index<<" to "<<(index+1)%size <<" edge..."<<std::endl;
-                SDL_RenderDrawLine(renderer,(ch[index][0]*scale+dx),(-ch[index][1]*scale+dy),(ch[(index+1)%size][0]*scale+dx),(-ch[(index+1)%size][1]*scale+dy));
-                SDL_RenderPresent(renderer);
-                SDL_Delay(100);
+        }
+        for (int i=0; i<T.size();i++){
+            for (int j=0; j<T.size();j++){
+                std::cout<<"printing "<<i<<" to "<< j <<" edge..."<<std::endl;
+                if (adjacentMatrix[i][j] == true){
+                    SDL_RenderDrawLine(renderer,(T[i][0]*scale+dx),(-T[i][1]*scale+dy),(T[j][0]*scale+dx),(-T[j][1]*scale+dy));
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(100);
+                }
             }
         }
         std::cout<<"===============restarting drawing...===============\n";
