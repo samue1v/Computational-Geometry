@@ -45,9 +45,9 @@ class ObjUtils{
         INFILE.open(fileName);
         std::string line,temp;
         Object2D currentObj;
-        while(INFILE){
-            getline(INFILE,line);
-            if(line[0] == 'o'){
+        currentObj.name = "";
+        while(getline(INFILE,line)){
+            if(line[0] == 'o' && line[1] == ' '){
                 if(currentObj.name != ""){
                     obj2D.push_back(currentObj);
                 }
@@ -128,7 +128,7 @@ class ObjUtils{
             for(auto vt : obj.texture2D){
                 OUTFILE<< "vt " << vt[0] << " " << vt[1]<<std::endl;
             }
-            OUTFILE << "s 0" << std::endl;
+            //OUTFILE << "s 0" << std::endl;
             //aqui deveria vir as faces
             for(auto l : obj.line){
                 OUTFILE<< "l " << l.first << " " << l.second<<std::endl;
