@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
     // error code will be received.
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cout << "SDL could not be initialized: " <<
-                  SDL_GetError()<<std::endl;
+                  SDL_GetError();
     }else{
         std::cout << "SDL video system is ready to go\n";
     }
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     window = SDL_CreateWindow("C++ SDL2 Window",0, 0, 640,480,SDL_WINDOW_SHOWN);
 
     SDL_Renderer* renderer = nullptr;
-    renderer = SDL_CreateRenderer(window,4,SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     // Create a rectangle
     SDL_Rect rectangle;
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
 
         // Do our drawing
         SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawLine(renderer,5,5,100,120);
+        SDL_RenderDrawLine(renderer,5,0,100,0);
 
         SDL_RenderDrawRect(renderer,&rectangle);
 

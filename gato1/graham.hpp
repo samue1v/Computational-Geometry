@@ -62,12 +62,17 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     //}
 
     std::vector<Vec2> vectorPoints = pointCloud;
+    std::cout<<"pontos recebidos:\n";
+    std::cout<<std::endl;
+    for(auto v : vectorPoints){
+        std::cout << v;
+    }
     int size = vectorPoints.size();
     int randPos = pointCloud.size() * dist(mt);
     //std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
-    
+    std::cout<<"size antes: "<<vectorPoints.size();
     quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
-
+    std::cout<<"\nsize depois: " <<vectorPoints.size()<<std::endl;
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;
     for(auto v : vectorPoints){
