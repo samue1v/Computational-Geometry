@@ -6,8 +6,17 @@
 #include <utility>
 #include <vector>
 
-
-int qsPartition(std::vector<Vec2> & vec, double ref, int first, int last)
+Vec2 getCentroid(const std::vector<Vec2> & list){
+    double x = 0;
+    double y = 0;
+    for (auto v : list ){
+        x+=v[0];
+        y+=v[1];
+    }
+    int size = list.size();
+    return Vec2(x/size, y/size);
+}
+int qsPartition(std::vector<Vec2> & vec, Vec2 ref, int first, int last)
 {
     Vec2 pivot = vec[last];
     int i = (first - 1);
@@ -15,11 +24,13 @@ int qsPartition(std::vector<Vec2> & vec, double ref, int first, int last)
     
     for (int j = first; j <= last - 1; j++)
     {
-        double p1 = pseudoAngleSquare(vec[j]);
-        double p2 = pseudoAngleSquare(pivot);
+        double p1 = get_angle(ref, vec[j]);
+        double p2 = get_angle(ref,pivot);
+        // double p1 = pseudoAngleSquare(vec[j]);
+        // double p2 = pseudoAngleSquare(pivot);
 
-        p1 < ref ? p1+=8:1;
-        p2 < ref ? p2+=8:1;
+        // p1 < ref ? p1+=8:1;
+        // p2 < ref ? p2+=8:1;
         if (p1 < p2)
         {
             i++;
@@ -34,7 +45,7 @@ int qsPartition(std::vector<Vec2> & vec, double ref, int first, int last)
     return (i + 1);
 }
  
-void quickSort(std::vector<Vec2> & vec,double ref,int first, int last)
+void quickSort(std::vector<Vec2> & vec,Vec2 ref,int first, int last)
 {
     if (first < last)
     {
@@ -71,7 +82,7 @@ void graham(const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull
     int randPos = pointCloud.size() * dist(mt);
     std::cout<< "Ponto de inicio: "<<vectorPoints[randPos] << std::endl;
     std::cout<<"size antes: "<<vectorPoints.size();
-    quickSort((vectorPoints),pseudoAngleSquare(vectorPoints[randPos]),0,vectorPoints.size()-1);
+    quickSort((vectorPoints), getCentroid(vectorPoints),0,vectorPoints.size()-1);
     std::cout<<"\nsize depois: " <<vectorPoints.size()<<std::endl;
     std::cout<<"ordenação :\n";
     std::cout<<std::endl;

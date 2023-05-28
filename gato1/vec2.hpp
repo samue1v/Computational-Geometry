@@ -147,33 +147,17 @@ inline double pseudoAngleSquare(const Vec2 & v){
     return 8 - (-y)/x;
 }
 
-inline double pseudoAngleSquare(const Vec2 & v, const Vec2 & ref){
-    double x = v[0];
-    double y = v[1];
-    if( y >= 0){
-        if(x >= 0){
-            if(x >= y){
-                return y/x;
-            }
-        return 2 - x/y;
-        }
-    if(-x <= y){
-        return 2 + (-x)/y;
-    }
-    return 4 - y/(-x); 
-    }
-    if(x<0){
-        if(-x >= -y){
-            return 4 + (-y)/(-x);
-        }
-        return 6 - (-x)/(-y);
-    }
-    if(x<=-y){
-        return 6 + x/(-y);
-    }
-    return 8 - (-y)/x;
-}
+    // //get angle between this point and another
+    // inline double get_angle(const Vec2 & v1, const Vec2 & v2) {
+    //     //check to make sure the angle won't be "0"
+    //     if(v1[0] == v2[0]) { return 0; }
 
+    //     //cast to double, or risk losing precision
+    //     return( atan( double(v2[1]- v1[1]) / double(v2[0] - v1[0]) ) );
+    // }
+inline double get_angle(const Vec2 & center, const Vec2 & v) {
+    return atan2( (v[1] - center[1]) , (v[0] - center[0]));  
+}
 using Point2 = Vec2;
 
 #endif
