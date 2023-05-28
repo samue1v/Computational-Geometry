@@ -2,6 +2,7 @@
 #include <fstream>
 
 int main(){
+    /*
     //leitura do obj
     std::string filename = "entrada.obj"; //obj qualquer
     std::ofstream OUT;
@@ -26,6 +27,11 @@ int main(){
         std::cout << "copiou as 2 ultimas!!\nvalores dos pontos: \n"<< bh.obj2D[0].points2D[size-1] << bh.obj2D[0].points2D[size-2] ;
     } else {
         std::cout<<"2 ultimas nao sao iguais!!"<<std::endl;
-    }
+    }*/
+
+    ObjUtils util;
+    util.readFromFile2D("../fixedcat_div.obj");
+    util.writeToFile2D("testesaida.obj");
+
     return 0;
 }
