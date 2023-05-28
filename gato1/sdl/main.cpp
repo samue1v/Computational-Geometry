@@ -1,47 +1,63 @@
 // On linux compile with:
 // g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl
-// On windows compile with (if using mingw)
-// g++ main.cpp -o prog.exe -lmingw32 -lSDL2main -lSDL2
-// On Mac compile with:
-// clang++ main.cpp -I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks -framework SDL2
+//#include "vec2.hpp"
+#include <string>
+//#include "objUtils.h"
+#include <fstream>
+#include "../graham.hpp"
+#include <SDL2/SDL.h> 
 
-// C++ Standard Libraries
-#include <iostream>
-// Third Party
-#include <SDL2/SDL.h> // For Mac, use <SDL.h>
-
-int main(int argc, char* argv[]){
-    // Create a window data type
-    // This pointer will point to the 
-    // window that is allocated from SDL_CreateWindow
-    SDL_Window* window=nullptr;
-
-    // Initialize the video subsystem.
-    // iF it returns less than 1, then an
-    // error code will be received.
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
+bool sdlnit(){
+if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cout << "SDL could not be initialized: " <<
                   SDL_GetError();
-    }else{
-        std::cout << "SDL video system is ready to go\n";
+                  return false;
     }
+     std::cout << "SDL video system is ready to go\n";
+     return true;
+}
+int main(){
+    //inicialização do sdl
+    SDL_Window* window=nullptr;
+    if (!(sdlnit())){
+        return 0;
+    }
+
     // Request a window to be created for our platform
     // The parameters are for the title, x and y position,
     // and the width and height of the window.
-    window = SDL_CreateWindow("C++ SDL2 Window",0, 0, 640,480,SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Convex Hull SDL2",0, 0, 640,480,SDL_WINDOW_SHOWN);
 
     SDL_Renderer* renderer = nullptr;
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
-    // Create a rectangle
-    SDL_Rect rectangle;
-    rectangle.x = 50;
-    rectangle.y = 100;
-    rectangle.w = 20;
-    rectangle.h = 20;
+    //leitura do obj
+    std::string filename = "../fixedcat.obj";
+    std::ofstream OUT;
+    OUT.open("saida.obj");
+    OUT << "o gatodoido\n";
+    ObjUtils bh,ah;
+    bh.readFromFile2D(filename);
 
+    std::cout<<"pontos lidos pelo utils:\n";
+    for(auto v: bh.obj2D[0].points2D){
+        //OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
+        std::cout << "("<<v[0]<<"," <<v[1] << ")"<<std::endl;
+    }
 
-    // Infinite loop for our application
+    int cout=0;
+    std::vector<Vec2> ch;
+    graham(bh.obj2D[0].points2D,ch);
+    std::cout<<"pontos do fecho:\n";
+    for(auto v: ch){
+        OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
+        std::cout << "("<<v[0]<<"," <<v[1] << ")"<<std::endl;
+    }
+
+    std::cout << "=========================== fim do calculo do fecho =========================== " << std::endl;
+    OUT.close();
+
+        // Infinite loop for our application
     bool gameIsRunning = true;
     // Main application loop
     while(gameIsRunning){
@@ -61,14 +77,23 @@ int main(int argc, char* argv[]){
         // Gives us a clear "canvas"
         SDL_SetRenderDrawColor(renderer,0,0,0,SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
-
+        double scale = 30;
+        double dx = 320.0;
+        double dy = 340.0;
         // Do our drawing
         SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawLine(renderer,5,0,100,0);
-
-        SDL_RenderDrawRect(renderer,&rectangle);
-
-
+        int size = ch.size();
+        for (auto v : bh.obj2D[0].points2D){
+        SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
+        }
+        for (int i=0; i<size;i++){
+            int index = i%(size);
+            std::cout<<"printing "<<index<<" to "<<(index+1)%size <<" edge..."<<std::endl;
+            SDL_RenderDrawLine(renderer,(ch[index][0]*scale+dx),(-ch[index][1]*scale+dy),(ch[(index+1)%size][0]*scale+dx),(-ch[(index+1)%size][1]*scale+dy));
+            SDL_RenderPresent(renderer);
+            SDL_Delay(1000);
+        }
+        std::cout<<"===============restarting drawing...===============\n";
         // Finally show what we've drawn
         SDL_RenderPresent(renderer);
 
