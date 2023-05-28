@@ -1,5 +1,5 @@
-// On linux compile with:
-// g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl
+// On linux compile and run with:
+// g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl ; ./prog
 //#include "vec2.hpp"
 #include <string>
 //#include "objUtils.h"
