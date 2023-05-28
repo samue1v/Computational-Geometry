@@ -1,3 +1,5 @@
+// On linux compile with:
+// g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl
 //#include "vec2.hpp"
 #include <string>
 //#include "objUtils.h"
@@ -30,7 +32,7 @@ int main(){
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     //leitura do obj
-    std::string filename = "../fixedcat.obj";
+    std::string filename = "../fixedcat2.obj";
     std::ofstream OUT;
     OUT.open("saida.obj");
     OUT << "o gatodoido\n";
@@ -75,16 +77,23 @@ int main(){
         // Gives us a clear "canvas"
         SDL_SetRenderDrawColor(renderer,0,0,0,SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
-        double scale = 10;
+        double scale = 30;
         double dx = 320.0;
-        double dy = 240.0;
+        double dy = 340.0;
         // Do our drawing
         SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
-        for (int i=0; i<ch.size();i++){
-            int index = i%ch.size();
-            
-            SDL_RenderDrawLine(renderer,(ch[index][0]*scale+dx),(ch[index][1]*scale+dy),(ch[index+1][0]*scale+dx),(ch[index+1][1]*scale+dy));
+        int size = ch.size();
+        for (auto v : bh.obj2D[0].points2D){
+        SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
         }
+        for (int i=0; i<size;i++){
+            int index = i%(size);
+            std::cout<<"printing "<<index<<" to "<<(index+1)%size <<" edge..."<<std::endl;
+            SDL_RenderDrawLine(renderer,(ch[index][0]*scale+dx),(-ch[index][1]*scale+dy),(ch[(index+1)%size][0]*scale+dx),(-ch[(index+1)%size][1]*scale+dy));
+            SDL_RenderPresent(renderer);
+            SDL_Delay(1000);
+        }
+        std::cout<<"===============restarting drawing...===============\n";
         // Finally show what we've drawn
         SDL_RenderPresent(renderer);
 

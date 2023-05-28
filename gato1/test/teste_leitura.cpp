@@ -11,8 +11,15 @@ int main(){
     bh.readFromFile2D(filename);
     int size = bh.obj2D[0].points2D.size();
     //std::cout<<"pontos lidos pelo utils:\n";
+    Vec2 prev;
+    Vec2 atual;
     for(int i=0; i< size;i++){
-        std::cout << "("<<bh.obj2D[0].points2D[i][0]<<"," <<bh.obj2D[0].points2D[i][1] << ")"<<std::endl;
+        bool repetiu = false;
+        atual = bh.obj2D[0].points2D[i];
+        std::cout << "("<<atual[0]<<"," <<atual[1] << ")"<<std::endl;
+        if (prev == atual){
+            std::cout<<"2 pontos iguais!! " << i <<" e " <<i-1;
+        }
     }
 
     if (bh.obj2D[0].points2D[size-1] == bh.obj2D[0].points2D[size-2] ){
