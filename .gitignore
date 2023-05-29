@@ -38,3 +38,5 @@
 !fixedcat.obj
 !fixedcat_div.obj
 !saida.obj
+!fixedcat_div_with_internals.obj
+!mergedhullcat.obj

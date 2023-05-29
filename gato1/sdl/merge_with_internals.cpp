@@ -52,7 +52,7 @@ int main () {
     //ler o arquivo, com todos os obj
 
     //leitura do obj
-    std::string filename = "../fixedcat_div.obj";
+    std::string filename = "../fixedcat_div_with_internals.obj";
     ObjUtils utils;
     utils.readFromFile2D(filename);
     std::vector<Object2D> objectList;
@@ -128,24 +128,6 @@ int main () {
         }
         std::cout<<std::endl;
     }
-    //escrever o OBJ
-
-    ObjUtils utilhull;
-    utilhull.obj2D.push_back(Object2D("mergedhullcat"));
-    for(auto v : T){
-        utilhull.obj2D[0].points2D.push_back(v);
-    }
-
-    for(int i = 0;i < adjacentMatrix.size();i++){
-        for(int j = 0;j < adjacentMatrix[i].size();j++){
-            if(adjacentMatrix[i][j]){
-                adjacentMatrix[j][i] = false;
-                utilhull.obj2D[0].line.push_back(std::pair<int, int>(i+1,j+1));
-            }
-        }
-    }
-    utilhull.writeToFile2D("mergedhullcat.obj");
-    
    //realizar a visualização com o SDL2
 
         // Infinite loop for our application
@@ -172,6 +154,16 @@ int main () {
         double dx = 320.0;
         double dy = 340.0;
         // Do our drawing
+            // pintando todos os pontos
+        for (auto object : utils.obj2D){
+        SDL_SetRenderDrawColor(renderer,27,216,100,SDL_ALPHA_OPAQUE);
+            std::vector<Vec2> pts = object.points2D;
+            int size = pts.size();
+            for (auto v : object.points2D){
+                SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
+            }
+        }
+            // pintando o fecho
         SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
         for (auto object : objectList){
             std::vector<Vec2> ch = object.points2D;
