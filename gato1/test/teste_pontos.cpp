@@ -3,6 +3,7 @@
 //#include "vec2.hpp"
 #include <string>
 #include <algorithm>
+#include <algorithm>
 //#include "objUtils.h"
 #include <fstream>
 #include "../graham.hpp"
