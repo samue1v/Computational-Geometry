@@ -7,10 +7,14 @@
 #include <vector>
 
 bool isChecked(const std::pair<int,int> & edge, const std::vector<std::vector<int>> & adjacencyMatrix){
-    return adjacencyMatrix[std::get<0>(edge)][std::get<1>(edge)] == 2 ? true : false;
+    return adjacencyMatrix[edge.first][edge.second] == 2 ? true : false;
 }
 
-void frontierAdvance(const std::vector<std::vector<int>> & adjacencyMatrix, std::vector<std::vector<int>> triangulation){
+void buildAdjacencyMatrix (const std::vector<Vec2> & pointCloud, std::vector<Vec2> & convexHull ){
+
+}
+
+void frontierAdvance(std::vector<std::vector<int>> & adjacencyMatrix, std::vector<std::vector<int>> triangulation){
     //  adiciona as arestas na fila
     std::queue<std::pair<int,int>> queue;
 
