@@ -11,25 +11,29 @@
 
 class FrontierAdvance {
     public:
+        FrontierAdvance();
+        FrontierAdvance(Object2D & obj2D);
         void getAllValidVertexes(const std::pair<int,int> & edge);
         bool checkIntersection(const std::pair<int,int> & edge, Vec2 vertex);
         bool check(const std::pair<int,int> & edge);
         bool invalidate(const std::pair<int,int> & edge);
         bool isInvalid(const std::pair<int,int> & edge);
         bool isDone(const std::pair<int,int> & edge);
-        void buildAdjacencyMatrix(const std::vector<Vec2> & vertexList);
         void frontierAdvance();
         int delaunay(const std::pair<int,int> & edge);
         //bool crossCompare(Vec2 p, Vec2 c, Vec2 n);
 
     private:
+        Object2D obj2D;
         std::vector<std::vector<int>> adjacencyMatrix;
         std::vector<Vec2> vertexList;
         std::vector<std::pair<int,int>> triangulation;
 };
 
-void FrontierAdvance::getAllValidVertexes(const std::pair<int,int> & edge){
+FrontierAdvance::FrontierAdvance(){}
 
+FrontierAdvance::FrontierAdvance(Object2D & obj2D){
+    this->obj2D = obj2D;
 }
 
 bool FrontierAdvance::checkIntersection(const std::pair<int,int> & edge, Vec2 vertex){
@@ -56,12 +60,8 @@ bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
     return adjacencyMatrix[edge.first][edge.second] == 2 ? true : false;
 }
 
-void FrontierAdvance::buildAdjacencyMatrix (const std::vector<Vec2> & vertexList){
-
-}
-
 int FrontierAdvance::delaunay(const std::pair<int,int> & edge){
-
+    
 }
 
 bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
@@ -71,8 +71,6 @@ bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
     }
     return false;
 }
-
-
 
 void FrontierAdvance::frontierAdvance(){
     //  adiciona as arestas na fila
@@ -87,6 +85,7 @@ void FrontierAdvance::frontierAdvance(){
         queue.push(newEdge1);
         queue.push(newEdge2);
         check(currentEdge);
+        //comentarios que devem ser transformados na função delaunay(), checks e push já foram implementados
         /*while(!foundVertex || i >= vertexList.size()){
             //condição 1: o ponto está no lado esquerdo da aresta
             //condição 2: as novas arestas geradas não interceptam arestas existentes (circulo de delaunay)
