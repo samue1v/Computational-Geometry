@@ -60,23 +60,28 @@ bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
     return adjacencyMatrix[edge.first][edge.second] == 2 ? true : false;
 }
 
-int FrontierAdvance::delaunay(const std::pair<int,int> & edge){
+int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
     int bestVertex = -1;
     double bestAngle = 1;
-    bool valid = false;
-    for (int i=0;i<vertexList.size();i++){
-        if (!crossCompare(vertexList[edge.first],vertexList[edge.second], vertexList[i])){
-            for (int j=0;j<vertexList.size();j++){
-                if (i!=j){
-                    valid = pointInCircle();
-                    if (valid){
-                        double currentAngle = angle(edge, vertexList[i]);
-                        currentAngle < bestAngle ? bestAngle = currentAngle, bestVertex = i : 1;
-                    }
+    bool valid = true;
+
+    for (int i = 0; i < vertexList.size(); i++) {
+        if (!crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
+            for (int j = 0; j < vertexList.size(); j++) {
+                if (i != j && pointInCircle()) {
+                    valid = false;
                 }
+            }
+            if (valid){
+                    double currentAngle = angle(edge, vertexList[i]);
+                    if (currentAngle < bestAngle) {
+                        bestAngle = currentAngle;
+                        bestVertex = i;
+                    }
             }
         }
     }
+
     return bestVertex;
 }
 
