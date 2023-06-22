@@ -46,7 +46,7 @@ bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p){
                                                 p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det();
     if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
     //experimentando mudar a tolerancia.
-    return deter >= 0.1 ? true : false;
+    return deter >= 0.4? true : false;
 }
 
 FrontierAdvance::FrontierAdvance(){}
@@ -120,6 +120,9 @@ void FrontierAdvance::makeTriangulation(){
             continue;
         };
         int i = delaunay(currentEdge);
+        if (i<0){
+            std::cout<<"erro na aresta " << currentEdge.first << ", " << currentEdge.second<<std::endl; 
+        }
         std::cout<<i<<"\n";
 
         std::pair<int,int> newEdge1(currentEdge.first, i);
