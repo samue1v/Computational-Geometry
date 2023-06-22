@@ -78,8 +78,10 @@ int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
     for (int i = 0; i < vertexList.size(); i++) {
         bool valid = true;
         if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
+            std::cout<<"entrou no crossCompare\n";
             for (int j = 0; j < vertexList.size(); j++) {
-                if (i != j && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j])) {
+                if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] &&  pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j])) {
+                    std::cout<<"entrou no pointInCircle\n";
                     valid = false;
                     break;
                 }
