@@ -32,7 +32,7 @@ int main(){
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     //leitura do obj
-    std::string filename = "triang_test.obj";//"../sdl/mergedhullcat.obj";
+    std::string filename = "gato_samuel.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
     std::ofstream OUT;
     OUT.open("saida.obj");
     OUT << "o gatodoido\n";
@@ -66,21 +66,16 @@ int main(){
 
         // (1) Handle Input
         // Start our event loop
-        while(SDL_PollEvent(&event)){
-            // Handle each specific event
-            if(event.type == SDL_QUIT){
-                gameIsRunning= false;
-            }
-        }
+
         // (2) Handle Updates
         
         // (3) Clear and Draw the Screen
         // Gives us a clear "canvas"
         SDL_SetRenderDrawColor(renderer,0,0,0,SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
-        double scale = 30;
-        double dx = 320.0;
-        double dy = 340.0;
+        double scale = 60;
+        double dx = 360;//320.0;
+        double dy = 440;//340.0;
         // Do our drawing
         SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
         int size = triangulation.size();
@@ -91,8 +86,16 @@ int main(){
             std::pair<int,int> index = triangulation[i];
             std::cout<<"printing "<<index.first<<" to "<<index.second<<" edge..."<<std::endl;
             SDL_RenderDrawLine(renderer,(vertexList[index.first][0]*scale+dx),(-vertexList[index.first][1]*scale+dy),(vertexList[index.second][0]*scale+dx),(-vertexList[index.second][1]*scale+dy));
+            SDL_Delay(100);
+            
             SDL_RenderPresent(renderer);
-            SDL_Delay(1000);
+            while(SDL_PollEvent(&event)){
+                // Handle each specific event
+                if(event.type == SDL_KEYDOWN){
+                    gameIsRunning= false;
+                }
+            }
+            if(!gameIsRunning){break;}
         }
         std::cout<<"===============restarting drawing...===============\n";
         // Finally show what we've drawn
