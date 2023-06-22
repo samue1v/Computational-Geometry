@@ -7,90 +7,28 @@
 #include <queue>
 #include <utility>
 #include <vector>
-#include "matrix.h"
+#include "../matrix.h"
 
 class FrontierAdvance {
     public:
         FrontierAdvance();
         FrontierAdvance(Object2D & obj2D);
         void getAllValidVertexes(const std::pair<int,int> & edge);
-        bool checkIntersection(const std::pair<int,int> & edge, Vec2 vertex);
-        bool check(const std::pair<int,int> & edge);
-        bool invalidate(const std::pair<int,int> & edge);
-        bool isInvalid(const std::pair<int,int> & edge);
+        void check(const std::pair<int,int> & edge);
         bool isDone(const std::pair<int,int> & edge);
-        void frontierAdvance();
+        void makeTriangulation();
         int delaunay(const std::pair<int,int> & edge);
-        //bool crossCompare(Vec2 p, Vec2 c, Vec2 n);
 
+        std::vector<std::pair<int,int>> triangulation;
+        std::vector<Vec2> vertexList;
     private:
         Object2D obj2D;
         std::vector<std::vector<int>> adjacencyMatrix;
-        std::vector<Vec2> vertexList;
-        std::vector<std::pair<int,int>> triangulation;
 };
 
-FrontierAdvance::FrontierAdvance(){}
 
-FrontierAdvance::FrontierAdvance(Object2D & obj2D){
-    this->obj2D = obj2D;
-}
-
-bool FrontierAdvance::checkIntersection(const std::pair<int,int> & edge, Vec2 vertex){
-    //checa se existe alguma interseção com alguma aresta antiga com as arestas geradas pela aresta atual e o vértice
-    //segmentIntersect do Vec2 checa pra gente se há interseção entre 2 arestas 
-}
-
-bool FrontierAdvance::check(const std::pair<int,int> & edge){
-    adjacencyMatrix[edge.first][edge.second]++;
-    adjacencyMatrix[edge.second][edge.first]++;
-    return true;
-}
-
-bool FrontierAdvance::invalidate(const std::pair<int,int> & edge){
-    adjacencyMatrix[edge.first][edge.second] = -1;
-    adjacencyMatrix[edge.second][edge.first] = -1;
-}
-
-bool FrontierAdvance::isInvalid(const std::pair<int,int> & edge){
-    return adjacencyMatrix[edge.first][edge.second] == -1 ? true : false;
-}
-
-bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
-    return adjacencyMatrix[edge.first][edge.second] == 2 ? true : false;
-}
-
-int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
-    int bestVertex = -1;
-    double bestAngle = 1;
-    bool valid = true;
-
-    for (int i = 0; i < vertexList.size(); i++) {
-        if (!crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
-            for (int j = 0; j < vertexList.size(); j++) {
-                if (i != j && pointInCircle()) {
-                    valid = false;
-                }
-            }
-            if (valid){
-                    double currentAngle = angle(edge, vertexList[i]);
-                    if (currentAngle < bestAngle) {
-                        bestAngle = currentAngle;
-                        bestVertex = i;
-                    }
-            }
-        }
-    }
-
-    return bestVertex;
-}
-
-bool pointInCircle(){
-
-}
-
-double angle(const std::pair<int,int> & edge, Vec2 v){
-    
+double angle(Vec2 p, Vec2 r, Vec2 q){
+    return dot(unit(p - r),unit(q - r));
 }
 
 bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
@@ -101,35 +39,85 @@ bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
     return false;
 }
 
-void FrontierAdvance::frontierAdvance(){
+bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p){
+    return Matrix<double,4,4>(std::vector<double>({a[0], a[1], a[0]*a[0]+a[1]*a[1], 1,
+                                                b[0], b[1], b[0]*b[0]+b[1]*b[1], 1,
+                                                c[0], c[1], c[0]*c[0]+c[1]*c[1], 1,
+                                                p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det() > 0 ? true : false; 
+}
+
+FrontierAdvance::FrontierAdvance(){}
+
+FrontierAdvance::FrontierAdvance(Object2D & obj2D){
+    this->obj2D = obj2D;
+    this->vertexList = obj2D.points2D;
+    int n = vertexList.size();
+    this->adjacencyMatrix = std::vector<std::vector<int>>(n,std::vector<int>(n,0)); 
+    std::cout<<"====dentro do construtor=====\n";
+    for(int i=0;i<obj2D.line.size();i++){
+        adjacencyMatrix[obj2D.line[i].first-1][obj2D.line[i].second-1] = 1;
+        std::cout << "("<<vertexList[obj2D.line[i].first-1][0]<<"," <<vertexList[obj2D.line[i].first-1][1] << ")"<<std::endl;
+        //std::cout<<obj2D.line[i].first-1<<","<<obj2D.line[i].second-1<<std::endl;
+    }
+    //exit(-1);
+}
+
+void FrontierAdvance::check(const std::pair<int,int> & edge){
+    adjacencyMatrix[edge.first][edge.second]++;
+    adjacencyMatrix[edge.second][edge.first]++;
+}
+
+bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
+    return adjacencyMatrix[edge.first][edge.second] == 2 ? true : false;
+}
+
+int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
+    int bestVertex = -1;
+    double bestAngle = 1;
+
+    for (int i = 0; i < vertexList.size(); i++) {
+        bool valid = true;
+        if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
+            for (int j = 0; j < vertexList.size(); j++) {
+                if (i != j && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j])) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid){
+                    double currentAngle = angle(vertexList[edge.first], vertexList[i], vertexList[edge.second]);
+                    std::cout<<"angulo: "<<currentAngle<<std::endl;
+                    if (currentAngle < bestAngle) {
+                        bestAngle = currentAngle;
+                        bestVertex = i;
+                    }
+            }
+        }
+    }
+    return bestVertex;
+}
+
+void FrontierAdvance::makeTriangulation(){
     //  adiciona as arestas na fila
     std::queue<std::pair<int,int>> queue;
-
+    for(auto e : obj2D.line){
+        e.first--;
+        e.second--;
+        queue.push(e);
+    }
+    std::cout<<"size: "<<queue.size()<<"\n";
     // vai esvaziando a fila, enquanto vai adicionando as novas arestas geradas 
     while (!queue.empty()){
+        std::cout<<"=====começo do while=====\n";
         auto currentEdge = queue.front();
         int i = delaunay(currentEdge);
+        std::cout<<"output delaunay: "<<i<<std::endl;
         std::pair<int,int> newEdge1(currentEdge.first, i);
         std::pair<int,int> newEdge2(i, currentEdge.second);
+        std::cout<<"final do while\n";
         queue.push(newEdge1);
         queue.push(newEdge2);
         check(currentEdge);
-        //comentarios que devem ser transformados na função delaunay(), checks e push já foram implementados
-        /*while(!foundVertex || i >= vertexList.size()){
-            //condição 1: o ponto está no lado esquerdo da aresta
-            //condição 2: as novas arestas geradas não interceptam arestas existentes (circulo de delaunay)
-            //condição 3: o ponto escolhido não possui nenhum ponto interno a algum circulo que contém a aresta atual e ele
-            if (crossCompare(vertexList[currentEdge.first],vertexList[currentEdge.second], vertexList[i]) && !(checkIntersection(currentEdge, vertexList[i]))){
-                check(currentEdge);
-                //check(std::pair<int,int> (currentEdge.first, i));
-                //check(std::pair<int,int> (i, currentEdge.second));
-                //queue.push() pra ambas as arestas
-                foundVertex = true;
-            }
-            // invalida a aresta, pq existe interseção entre alguma coisa e ela
-            // invalidate(currentEdge);
-            i++;
-        }*/
         triangulation.push_back(currentEdge);
         triangulation.push_back(newEdge1);
         triangulation.push_back(newEdge2);
