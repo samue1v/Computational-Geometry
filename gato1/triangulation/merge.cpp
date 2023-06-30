@@ -1,9 +1,9 @@
 // On linux compile and run with:
-// g++ -std=c++17 main.cpp -o prog -lSDL2 -ldl ; ./prog
+// g++ -std=c++17 merge.cpp -o merge -lSDL2 -ldl ; ./merge
 //#include "vec2.hpp"
 #include <string>
 //#include "objUtils.h"
-#include <fstream>
+#include <iostream>
 #include "frontierAdvance.h"
 #include <SDL2/SDL.h> 
 
@@ -34,28 +34,33 @@ int main(){
     //leitura do obj
     std::string filename = "sortedcat_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
     std::ofstream OUT;
+    //std::ofstream edges; 
+
     OUT.open("saida.obj");
     OUT << "o gatodoido\n";
-    ObjUtils bh,ah;
-    bh.readFromFile2D(filename);
+    ObjUtils utils;
+    utils.readFromFile2D(filename);
+    std::vector<Object2D> objectList;
+    std::vector<std::vector<std::pair<int,int>>> triangulationList;
 
-    std::cout<<"pontos lidos pelo utils:\n";
-    for(auto v: bh.obj2D[0].points2D){
-        //OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
-        std::cout << "("<<v[0]<<"," <<v[1] << ")"<<std::endl;
+    //calcular a triangulação pra todos os obj separados 
+    for (auto object : utils.obj2D){
+        FrontierAdvance frontAdv = FrontierAdvance(object);
+        std::cout << "====calculo triangulação====\n";
+        frontAdv.makeTriangulation();
+        std::vector<std::pair<int,int>> triangulation = frontAdv.triangulation;
+        // depois ajustar pra cada indice ficar correto
+        // for (auto edge : triangulation){
+        //     edges << "l " << edge.first << " " << edge.second << std::endl; 
+        // }
+        triangulationList.push_back(triangulation);
+        for (auto v : object.points2D) {
+            OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
+        } 
     }
-
-    FrontierAdvance frontAdv = FrontierAdvance(bh.obj2D[0]);
-    frontAdv.makeTriangulation();
-    std::vector<std::pair<int,int>> triangulation = frontAdv.triangulation;
-    std::vector<Vec2> vertexList = frontAdv.vertexList;
-    /*std::cout<<"pontos do fecho:\n";
-    for(auto v: ){
-        OUT << "v "<<v[0]<<" " <<v[1] << std::endl;
-        std::cout << "("<<v[0]<<"," <<v[1] << ")"<<std::endl;
-    }*/
-
+    
     std::cout << "=========================== fim do calculo da triangulação =========================== " << std::endl;
+    //OUT << edges;
     OUT.close();
 
         // Infinite loop for our application
@@ -77,18 +82,28 @@ int main(){
         double dx = 360;//320.0;
         double dy = 440;//340.0;
         // Do our drawing
-        SDL_SetRenderDrawColor(renderer,255,255,255,SDL_ALPHA_OPAQUE);
-        int size = triangulation.size();
-        for (auto v : bh.obj2D[0].points2D){
-        SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
+        // todos os pontos
+        for (auto object : utils.obj2D){
+        SDL_SetRenderDrawColor(renderer,27,216,100,SDL_ALPHA_OPAQUE);
+            std::vector<Vec2> pts = object.points2D;
+            int size = pts.size();
+            for (auto v : object.points2D){
+                SDL_RenderDrawPoint(renderer, (v[0]*scale+dx),(-v[1]*scale+dy));
+            }
         }
-        for (int i=0; i<size;i++){
-            std::pair<int,int> index = triangulation[i];
-            std::cout<<"printing "<<index.first<<" to "<<index.second<<" edge..."<<std::endl;
-            SDL_RenderDrawLine(renderer,(vertexList[index.first][0]*scale+dx),(-vertexList[index.first][1]*scale+dy),(vertexList[index.second][0]*scale+dx),(-vertexList[index.second][1]*scale+dy));
+        // todas as arestas 
+
+        for (int i=0; i<triangulationList.size();i++){
+            auto triangulation = triangulationList[i];
+            auto vertexList = utils.obj2D[i].points2D;
+            for (int j=0;j<triangulation.size();j++){
+                std::pair<int,int> index = triangulation[i];
+                std::cout<<"printing "<<index.first<<" to "<<index.second<<" edge..."<<std::endl;
+                SDL_RenderDrawLine(renderer,(vertexList[index.first][0]*scale+dx),(-vertexList[index.first][1]*scale+dy),(vertexList[index.second][0]*scale+dx),(-vertexList[index.second][1]*scale+dy));
+            }
             SDL_Delay(100);
-            
             SDL_RenderPresent(renderer);
+
             while(SDL_PollEvent(&event)){
                 // Handle each specific event
                 if(event.type == SDL_KEYDOWN){
