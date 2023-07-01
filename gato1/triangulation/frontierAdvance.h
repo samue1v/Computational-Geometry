@@ -44,7 +44,7 @@ bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p){
                                                 b[0], b[1], b[0]*b[0]+b[1]*b[1], 1,
                                                 c[0], c[1], c[0]*c[0]+c[1]*c[1], 1,
                                                 p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det();
-    if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
+    //if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
     //experimentando mudar a tolerancia.
     return deter >= 0.4? true : false;
 }
@@ -78,21 +78,21 @@ bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
 int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
     int bestVertex = -1;
     double bestAngle = 1;
-    std::cout<<"Testando aresta: "<< "(P1:"<< edge.first << ","<< "P2:"<<edge.second<<")\n";
+    //std::cout<<"Testando aresta: "<< "(P1:"<< edge.first << ","<< "P2:"<<edge.second<<")\n";
     for (int i = 0; i < vertexList.size(); i++) {
         bool valid = true;
-        std::cout<<"Ponto i testado: " << i <<"\n";
+        //std::cout<<"Ponto i testado: " << i <<"\n";
         if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
             for (int j = 0; j < vertexList.size(); j++) {
                 if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j])) {
-                    std::cout<<"Ponto j invalidado: " << j << std::endl;
+                    //std::cout<<"Ponto j invalidado: " << j << std::endl;
                     valid = false;
                     break;
                 }
             }
             if (valid){
                 double currentAngle = angle(vertexList[edge.first], vertexList[i], vertexList[edge.second]);
-                std::cout<<"validado!!\n";
+                //std::cout<<"validado!!\n";
                 if (currentAngle <= bestAngle) {
                     bestAngle = currentAngle;
                     bestVertex = i;
