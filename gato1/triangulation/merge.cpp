@@ -49,7 +49,7 @@ int main(){
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     //leitura do obj
-    std::string filename = "sortedcat_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
+    std::string filename = "sortedcat_div_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
     std::ofstream OUT;
     //std::ofstream edges; 
 

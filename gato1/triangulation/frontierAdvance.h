@@ -46,7 +46,7 @@ bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p){
                                                 p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det();
     //if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
     //experimentando mudar a tolerancia.
-    return deter >= 0.4? true : false;
+    return deter >= 2? true : false;
 }
 
 FrontierAdvance::FrontierAdvance(){}
