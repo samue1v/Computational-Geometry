@@ -49,7 +49,7 @@ int main(){
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     //leitura do obj
-    std::string filename = "sortedcat_div_internals.obj";//"sortedcat_div_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
+    std::string filename = "triang_cat.obj";//"sortedcat_div_internals.obj";//"sortedcat_div_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
     std::ofstream OUT;
     //std::ofstream edges; 
 
@@ -137,10 +137,9 @@ int main(){
                 std::pair<int,int> index = triangulation[j];
                 std::cout<<"printing "<<index.first<<" to "<<index.second<<" edge..."<<std::endl;
                 SDL_RenderDrawLine(renderer,(T[index.first][0]*scale+dx),(-T[index.first][1]*scale+dy),(T[index.second][0]*scale+dx),(-T[index.second][1]*scale+dy));
-                SDL_Delay(20);
+                SDL_Delay(100);
                 SDL_RenderPresent(renderer);
             }
-
             while(SDL_PollEvent(&event)){
                 // Handle each specific event
                 if(event.type == SDL_KEYDOWN){

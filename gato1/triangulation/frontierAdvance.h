@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 #include "../matrix.h"
-#define MAX_TOLERANCE 0
+#define MAX_TOLERANCE 100.0
 
 class FrontierAdvance {
     public:
@@ -44,7 +44,7 @@ bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p, double tolerance){
                                                 b[0], b[1], b[0]*b[0]+b[1]*b[1], 1,
                                                 c[0], c[1], c[0]*c[0]+c[1]*c[1], 1,
                                                 p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det();
-    if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
+    // if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
     //experimentando mudar a tolerancia.
     return deter >= tolerance? true : false;
 }
@@ -87,11 +87,11 @@ int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
     while (!found){
             for (int i = 0; i < vertexList.size(); i++) {
             bool valid = true;
-            std::cout<<"Ponto i testado: " << i <<"\n";
+            //std::cout<<"Ponto i testado: " << i <<"\n";
             if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
                 for (int j = 0; j < vertexList.size(); j++) {
                     if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j], 0/*tolerance*/)) {
-                        std::cout<<"Ponto j invalidado: " << j << std::endl;
+                        //std::cout<<"Ponto j invalidado: " << j << std::endl;
                         valid = false;
                         break;
                     }
