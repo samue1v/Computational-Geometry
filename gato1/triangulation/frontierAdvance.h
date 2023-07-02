@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 #include "../matrix.h"
-#define MAX_TOLERANCE 100.0
+#define MAX_TOLERANCE 0
 
 class FrontierAdvance {
     public:
@@ -19,7 +19,6 @@ class FrontierAdvance {
         bool isDone(const std::pair<int,int> & edge);
         void makeTriangulation();
         int delaunay(const std::pair<int,int> & edge);
-
         std::vector<std::pair<int,int>> triangulation;
         std::vector<Vec2> vertexList;
     private:
@@ -57,13 +56,16 @@ FrontierAdvance::FrontierAdvance(Object2D & obj2D){
     this->vertexList = obj2D.points2D;
     int n = vertexList.size();
     this->adjacencyMatrix = std::vector<std::vector<int>>(n,std::vector<int>(n,0)); 
-    //std::cout<<"====dentro do construtor=====\n";
+    
+    std::cout<<obj2D.line.size()<<std::endl;
+    std::cout<<obj2D.points2D.size()<<std::endl;
     for(int i=0;i<obj2D.line.size();i++){
         adjacencyMatrix[obj2D.line[i].first-1][obj2D.line[i].second-1] = 1;
         adjacencyMatrix[obj2D.line[i].second-1][obj2D.line[i].first-1] = 1;
         //std::cout << "("<<vertexList[obj2D.line[i].first-1][0]<<"," <<vertexList[obj2D.line[i].first-1][1] << ")"<<std::endl;
         //std::cout<<obj2D.line[i].first-1<<","<<obj2D.line[i].second-1<<std::endl;
     }
+    std::cout<<"====dentro do construtor=====\n";
     //exit(-1);
 }
 
@@ -88,7 +90,7 @@ int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
             std::cout<<"Ponto i testado: " << i <<"\n";
             if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
                 for (int j = 0; j < vertexList.size(); j++) {
-                    if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j], tolerance)) {
+                    if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j], 0/*tolerance*/)) {
                         std::cout<<"Ponto j invalidado: " << j << std::endl;
                         valid = false;
                         break;

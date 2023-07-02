@@ -47,11 +47,13 @@ class ObjUtils{
         Object2D currentObj;
         currentObj.name = "";
         while(getline(INFILE,line)){
+            //std::cout<<line<<std::endl;
             if(line[0] == 'o' && line[1] == ' '){
                 if(currentObj.name != ""){
                     obj2D.push_back(currentObj);
                 }
                 currentObj = Object2D(line.substr(2));
+                std::cout<<currentObj.name<<std::endl;
             }
             else if(line[0] == 'v' && line[1] == ' ' ){
                 int lastvoid = 1;
