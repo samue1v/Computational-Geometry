@@ -49,7 +49,7 @@ int main(){
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
     
     //leitura do obj
-    std::string filename = "sortedcat_div_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
+    std::string filename = "test.obj";//"sortedcat_div_internals.obj";//"gato_samuel.obj";//"../sdl/mergedhullcat.obj";/*"triang_test.obj";*/
     std::ofstream OUT;
     //std::ofstream edges; 
 
@@ -59,22 +59,21 @@ int main(){
     utils.readFromFile2D(filename);
     std::vector<std::vector<std::pair<int,int>>> triangulationList;
     std::vector<Vec2> T; 
-
+    int index=0;
     //calcular a triangulação pra todos os obj separados 
     for (auto object : utils.obj2D){
+        std::cout<< "entrou\n";
+        index++;
         FrontierAdvance frontAdv = FrontierAdvance(object);
-        std::cout << "====calculo triangulação====\n";
+        std::cout << "====objeto "<<index<<": calculo triangulação====\n";
         frontAdv.makeTriangulation();
         std::vector<std::pair<int,int>> triangulation = frontAdv.triangulation;
-        // depois ajustar pra cada indice ficar correto
-        // for (auto edge : triangulation){
-        //     edges << "l " << edge.first << " " << edge.second << std::endl;
-        // }
         for (int i=0;i<triangulation.size();i++) {
             triangulation[i].first = addInsideTotal(T, object.points2D[triangulation[i].first]);
             triangulation[i].second = addInsideTotal(T, object.points2D[triangulation[i].second]);
         } 
         triangulationList.push_back(triangulation);
+        std::cout<< "saiu\n";
     }
 
     for (auto v : T){

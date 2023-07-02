@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 #include "../matrix.h"
+#define MAX_TOLERANCE 100.0
 
 class FrontierAdvance {
     public:
@@ -39,14 +40,14 @@ bool crossCompare(Vec2 p, Vec2 c, Vec2 n){
     return false;
 }
 
-bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p){
+bool pointInCircle(Vec2 a, Vec2 b, Vec2 c, Vec2 p, double tolerance){
     double deter = Matrix<double,4,4>(std::vector<double>({a[0], a[1], a[0]*a[0]+a[1]*a[1], 1,
                                                 b[0], b[1], b[0]*b[0]+b[1]*b[1], 1,
                                                 c[0], c[1], c[0]*c[0]+c[1]*c[1], 1,
                                                 p[0], p[1], p[0]*p[0]+p[1]*p[1], 1})).det();
-    //if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
+    if(deter>0){std::cout<<"Determiant: "<<deter<<"\n";}
     //experimentando mudar a tolerancia.
-    return deter >= 2? true : false;
+    return deter >= tolerance? true : false;
 }
 
 FrontierAdvance::FrontierAdvance(){}
@@ -78,26 +79,38 @@ bool FrontierAdvance::isDone(const std::pair<int,int> & edge){
 int FrontierAdvance::delaunay(const std::pair<int, int>& edge) {
     int bestVertex = -1;
     double bestAngle = 1;
-    //std::cout<<"Testando aresta: "<< "(P1:"<< edge.first << ","<< "P2:"<<edge.second<<")\n";
-    for (int i = 0; i < vertexList.size(); i++) {
-        bool valid = true;
-        //std::cout<<"Ponto i testado: " << i <<"\n";
-        if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
-            for (int j = 0; j < vertexList.size(); j++) {
-                if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j])) {
-                    //std::cout<<"Ponto j invalidado: " << j << std::endl;
-                    valid = false;
-                    break;
+    bool found = false;
+    double tolerance = 0.0;
+    std::cout<<"Testando aresta: "<< "(P1:"<< edge.first << ","<< "P2:"<<edge.second<<")\n";
+    while (!found){
+            for (int i = 0; i < vertexList.size(); i++) {
+            bool valid = true;
+            std::cout<<"Ponto i testado: " << i <<"\n";
+            if (crossCompare(vertexList[edge.first], vertexList[edge.second], vertexList[i])) {
+                for (int j = 0; j < vertexList.size(); j++) {
+                    if (i != j && vertexList[j] != vertexList[edge.first] && vertexList[j] != vertexList[edge.second] && pointInCircle(vertexList[edge.first], vertexList[edge.second], vertexList[i], vertexList[j], tolerance)) {
+                        std::cout<<"Ponto j invalidado: " << j << std::endl;
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid){
+                    double currentAngle = angle(vertexList[edge.first], vertexList[i], vertexList[edge.second]);
+                    std::cout<<"validado!!\n";
+                    if (currentAngle <= bestAngle) {
+                        bestAngle = currentAngle;
+                        bestVertex = i;
+                        found = true;
+                    }
                 }
             }
-            if (valid){
-                double currentAngle = angle(vertexList[edge.first], vertexList[i], vertexList[edge.second]);
-                //std::cout<<"validado!!\n";
-                if (currentAngle <= bestAngle) {
-                    bestAngle = currentAngle;
-                    bestVertex = i;
-                }
-            }
+        }
+        if (!found){
+            tolerance+=0.1;
+        }
+        if (tolerance >= MAX_TOLERANCE){
+            std::cout<<"tolerancia maxima atingida\n"; 
+            return bestVertex;
         }
     }
     return bestVertex;
@@ -111,7 +124,7 @@ void FrontierAdvance::makeTriangulation(){
         e.second--;
         queue.push(e);
     }
-    std::cout<<"size: "<<queue.size()<<"\n";
+    std::cout<<"tamanho da fila: "<<queue.size()<<"\n";
     // vai esvaziando a fila, enquanto vai adicionando as novas arestas geradas 
     while (!queue.empty()){
         auto currentEdge = queue.front();
@@ -123,7 +136,7 @@ void FrontierAdvance::makeTriangulation(){
         if (i<0){
             std::cout<<"erro na aresta " << currentEdge.first << ", " << currentEdge.second<<std::endl; 
         }
-        std::cout<<i<<"\n";
+        std::cout<<"melhor vertice: "<<i<<"\n";
 
         std::pair<int,int> newEdge1(currentEdge.first, i);
         std::pair<int,int> newEdge2(i, currentEdge.second);
