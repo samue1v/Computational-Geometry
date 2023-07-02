@@ -2,7 +2,7 @@ Arquivos na pasta gato1/sdl, incluindo a saída como .obj no arquivo mergedhullc
 
 Passos para rodar o trabalho 1:
 
-Compile o arquivo desejado na pasta gato1/sdl. 
+Compile o arquivo desejado na pasta gato1/sdl ou gato1/triangulation.
 
 Instruções para compilar o arquivo sdl:
 
